@@ -1,0 +1,69 @@
+relatorio_completo = []
+def tirar_media (a,b,c) :
+  somar_primeiro = int(a)+int(b)+int(c)
+  div_media = somar_primeiro / 3
+  return div_media
+
+
+while True:
+  escolha_de_sistema = input('Deseja [C]adastrar aluno / [S]air / [L]istar ? ')
+  # Aqui botei um menu de navegação para sair do while e caso o usuário queira
+  # listar os alunos cadastrados
+
+  if escolha_de_sistema.lower() == 'sair' or escolha_de_sistema.lower() == 's' :
+   print('Obrigado pela visita, volte logo!')
+   break
+   # Aqui quebro o laço de repetição com o break.
+
+  elif len(escolha_de_sistema) <= 0 :
+    print('Digite alguma coisa')
+
+   # Aqui apenas trato a entrada, caso o usuário não digite nada.
+
+  elif escolha_de_sistema.lower() == 'listar' or escolha_de_sistema.lower() == 'l' :
+      print(relatorio_completo)
+   # Pensei nessa opção depois de fazer todo o código, caso o usuário não queira
+   # esperar até o final para conseguir listar
+
+  elif escolha_de_sistema.lower() == 'cadastrar' or escolha_de_sistema.lower() == 'c' :
+   # Depois de todos os dados testados, aqui inicia o algoritmo
+
+    nome_aluno = input('Insira o nome do aluno: ')
+    notas_do_aluno = []
+
+    for i in range (3):
+      nota = int(input('digite a nota: '))
+      notas_do_aluno.append(nota)
+
+    #limitei a adicionar 3 notas apenas, foi a única maneira que veio na minha cabeça
+
+    media_do_aluno = sum(notas_do_aluno) / len(notas_do_aluno)
+
+    #tentei usar a funcao def que fiz la no inicio, porém deu erro, fiz na mão mesmo
+
+    if media_do_aluno >= 7 :
+      situacao_aluno = 'aprovado'
+    else :
+      situacao_aluno = 'reprovado'
+
+
+    relatorio_aluno = {'aluno': nome_aluno,
+                       'notas': notas_do_aluno,
+                       'situacao': situacao_aluno}
+
+   # Transformei os dados em uma variável que eu conseguisse adicionar no meu dicionário
+   # Preferi o dicionário do que as listas, pois conseguia trackear as informações
+
+    print(f'Dados inseridos nome:{relatorio_aluno['aluno']}')
+    print(f'Notas: {relatorio_aluno ['notas']}')
+    print({relatorio_aluno['situacao']})
+
+    # Aqui mostro as informações inseridas
+
+    relatorio_completo.append(relatorio_aluno)
+    #Aqui salvo os dados salvos na variável supracitada para fora do laço, para nao zerar.
+
+print('Esses foram os alunos cadastrados no sistema')
+print(f'{relatorio_completo}')
+
+    #Coloquei esse print fora do While, para dar um resumo do que foi feito na visita do usuário
