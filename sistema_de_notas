@@ -32,7 +32,7 @@ while True:
     notas_do_aluno = []
 
     for i in range (3):
-      nota = int(input('digite a nota: '))
+      nota = float(input('digite a nota: '))
       notas_do_aluno.append(nota)
 
     #limitei a adicionar 3 notas apenas, foi a única maneira que veio na minha cabeça
