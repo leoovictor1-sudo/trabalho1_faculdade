@@ -1,0 +1,105 @@
+#Aqui importei as bibliotecas necessárias
+import sqlite3  # Para criar e manipular o banco de dados SQLite
+import pandas as pd  # Para análise de dados
+import matplotlib.pyplot as plt  # Para gráficos
+
+
+# Conectar ao banco de dados SQLite e criar tabela
+
+conexao = sqlite3.connect('dados_vendas.db')
+cursor = conexao.cursor()
+
+#Criar uma tabela de vendas (caso não exista)
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS vendas1 (
+    id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
+    data_venda DATE,
+    produto TEXT,
+    categoria TEXT,
+    valor_venda REAL
+)
+''')
+
+#Inserir alguns dados de exemplo
+cursor.execute('''
+INSERT INTO vendas1 (data_venda, produto, categoria, valor_venda) VALUES
+('2023-01-01', 'Produto A', 'Eletrônicos', 1500.00),
+('2023-01-05', 'Produto B', 'Roupas', 350.00),
+('2023-02-10', 'Produto C', 'Eletrônicos', 1200.00),
+('2023-03-15', 'Produto D', 'Livros', 200.00),
+('2023-03-20', 'Produto E', 'Eletrônicos', 800.00),
+('2023-04-02', 'Produto F', 'Roupas', 400.00),
+('2023-05-05', 'Produto G', 'Livros', 150.00),
+('2023-06-10', 'Produto H', 'Eletrônicos', 1000.00),
+('2023-07-20', 'Produto I', 'Roupas', 600.00),
+('2023-08-25', 'Produto J', 'Eletrônicos', 700.00),
+('2023-09-30', 'Produto K', 'Livros', 300.00),
+('2023-10-05', 'Produto L', 'Roupas', 450.00),
+('2023-11-15', 'Produto M', 'Eletrônicos', 900.00),
+('2023-12-20', 'Produto N', 'Livros', 250.00);
+''')
+
+#Confirmar as mudanças no banco
+conexao.commit()
+
+
+#Explorar e preparar os dados para analise
+
+#Ler dados do SQLite para um DataFrame do Pandas
+df_vendas = pd.read_sql_query("SELECT * FROM vendas1", conexao)
+
+#Mostrar as primeiras linhas para inspeção
+print("Visualização inicial dos dados:")
+print(df_vendas.head())
+
+#Verificar informações gerais do DataFrame
+print("\nInformações do DataFrame:")
+print(df_vendas.info())
+
+#Estatísticas básicas
+print("\nEstatísticas descritivas:")
+print(df_vendas.describe())
+
+
+#Análisando os dados
+
+#Total de vendas por categoria
+vendas_categoria = df_vendas.groupby("categoria")["valor_venda"].sum().reset_index()
+print("\nTotal de vendas por categoria:")
+print(vendas_categoria)
+
+# Total de vendas por mês
+df_vendas['data_venda'] = pd.to_datetime(df_vendas['data_venda'])
+df_vendas['mes'] = df_vendas['data_venda'].dt.month
+vendas_mes = df_vendas.groupby("mes")["valor_venda"].sum().reset_index()
+print("\nTotal de vendas por mês:")
+print(vendas_mes)
+
+
+# Visualização dos dados 
+
+
+# Gráfico de barras: vendas por categoria
+plt.figure(figsize=(8,5))
+plt.bar(vendas_categoria['categoria'], vendas_categoria['valor_venda'], color='skyblue')
+plt.title("Total de Vendas por Categoria")
+plt.ylabel("Valor das Vendas")
+plt.xlabel("Categoria")
+plt.show()
+
+# Gráfico de linha: vendas ao longo dos meses
+plt.figure(figsize=(10,5))
+plt.plot(vendas_mes['mes'], vendas_mes['valor_venda'], marker='o', color='orange')
+plt.title("Vendas Mensais")
+plt.ylabel("Valor das Vendas")
+plt.xlabel("Mês")
+plt.xticks(range(1,13))
+plt.grid(True)
+plt.show()
+
+#conclusoes e insights
+
+print("\nInsights iniciais:")
+print("- Eletrônicos foram a categoria com maior faturamento.")
+print("- Vendas tiveram variações ao longo dos meses, com picos em janeiro e junho.")
+print("- Roupas e livros tiveram vendas menores, indicando oportunidades de promoção.")
