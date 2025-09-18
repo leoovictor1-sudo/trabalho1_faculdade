@@ -1,0 +1,108 @@
+import matplotlib.pyplot as plt
+
+def divisor_linha ():
+  return print(44 * '-')
+
+class Livro :
+  def __init__ (self, titulo, genero, quantidade):
+    self.titulo = titulo
+    self.genero = genero
+    self.quantidade = quantidade
+  def __repr__(self) :
+    return f"Livro(titulo='{self.titulo}', genero='{self.genero}', quantidade={self.quantidade})"
+
+
+lista_livros = []
+
+print('Bem-vindo ao sistema da biblioteca municipal')
+print('Escolha o que deseja fazer: ')
+
+while True :
+
+  escolha = input("[C]adastrar [S]air [B]uscar Livro [L]istar ")
+
+  if escolha == '' :
+    print('Digite alguma coisa')
+    continue
+
+  elif escolha.isdigit() :
+    print('Utilize apenas letras')
+    continue
+
+  elif escolha.lower() == 'cadastrar' or escolha.lower() == 'c' :
+    titulo = input('Digite o titulo do livro: ')
+    genero = input('Digite o gênero do livro: ')
+    while True:
+      try:
+        quantidade = int(input('Digite quantidade do livro: '))
+        break
+      except ValueError:
+        print('Insira apenas numeros.')
+        continue
+
+    livro_adicionado = Livro(titulo , genero, quantidade)
+    lista_livros.append(livro_adicionado)
+    divisor_linha()
+    print(f'Você acabou de adicionar o livro: {livro_adicionado.titulo}.')
+    print(f'O gênero desse livro é : {livro_adicionado.genero}')
+    print(f'A quantidade em estoque deste livro é: {livro_adicionado.quantidade}')
+    divisor_linha()
+
+  elif escolha.lower() == 'sair' or escolha.lower() == 's' :
+    print('Obrigado por contribuir com nosso sistema!')
+    break
+
+  elif escolha.lower() == 'buscar' or escolha.lower() == 'b' :
+    livro_encontrado = None
+    while True :
+      titulo_buscado = input('Qual titulo buscado: ')
+      for livro_buscado in lista_livros :
+        if livro_buscado.titulo.lower() == titulo_buscado.lower() :
+          livro_encontrado = livro_buscado
+          break
+
+      if livro_encontrado == None :
+          print('Titulo não encontrado')
+          continue
+
+      if livro_encontrado :
+          print('livro encontrado !')
+          print(f'O livro que você busca é: {livro_encontrado.titulo}')
+          print(f'O genero é : {livro_encontrado.genero}')
+          print(f'O estoque do livro é : {livro_encontrado.quantidade}')
+          divisor_linha()
+          break
+
+  elif escolha.lower() == 'listar' or escolha.lower() == 'l' :
+    try:
+      print('Aqui vai a lista dos livros nos sitema: ')
+      divisor_linha()
+      for livro_cadastrados in lista_livros :
+        divisor_linha()
+        print(f'Nome do livro: {livro_cadastrados.titulo}')
+        print(f'Gênero do livro : {livro_cadastrados.genero}')
+        print(f'Quantidade em estoque : {livro_cadastrados.quantidade}')
+        divisor_linha()
+
+      titulo_p_grf = []
+      quantidade_p_grf = []
+
+      for titulos_dos_livros in lista_livros :
+        titulo_p_grf.append(titulos_dos_livros.titulo)
+        quantidade_p_grf.append(titulos_dos_livros.quantidade)
+
+      plt.bar(titulo_p_grf, quantidade_p_grf, color='skyblue')
+      plt.title("Quantidade de Livros Cadastrados")
+      plt.xlabel("Livros")
+      plt.ylabel("Quantidade")
+      plt.ylim(0, max(quantidade_p_grf) + 2)
+      plt.show()
+      continue
+
+    except ValueError:
+      print('Nenhum livro listado no momento.')
+      continue
+
+  else:
+    print('Insira uma opção válida')
+    continue
