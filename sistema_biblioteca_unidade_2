@@ -1,7 +1,11 @@
 import matplotlib.pyplot as plt
+#importei a biblioteca 'matplotblit.pyplot'
+#para gerar os gráficos
 
 def divisor_linha ():
   return print(44 * '-')
+#criei essa função para ajudar na estética,
+#serve para criar uma linha divisória 
 
 class Livro :
   def __init__ (self, titulo, genero, quantidade):
@@ -10,28 +14,41 @@ class Livro :
     self.quantidade = quantidade
   def __repr__(self) :
     return f"Livro(titulo='{self.titulo}', genero='{self.genero}', quantidade={self.quantidade})"
-
+#criei a classe Livro, com atributos de titulo, genero,quantidade
+#usei o construtor __init__ como padrao, e o __repr__ para quando o objeto for printado,
+#exiba as informações da maneira que configurei
 
 lista_livros = []
+#usei essa variável para guarda os livros cadastrados
 
 print('Bem-vindo ao sistema da biblioteca municipal')
 print('Escolha o que deseja fazer: ')
+#as boas-vindas do sistema, botei fora do laço para que nao fique chato para o usuario
 
 while True :
+#laço que mantem o sistema
 
-  escolha = input("[C]adastrar [S]air [B]uscar Livro [L]istar ")
+  escolha = input("[C]adastrar [S]air [B]uscar Livro [L]istar: ")
+# por meio deste input criei um menu, para o usuário escolher o que quer executar
+# nesse sistema
 
   if escolha == '' :
     print('Digite alguma coisa')
     continue
+# tratamento do input, caso nao digite nada.
 
   elif escolha.isdigit() :
     print('Utilize apenas letras')
     continue
+# 2ª tratamento do input, caso digite números.
 
   elif escolha.lower() == 'cadastrar' or escolha.lower() == 'c' :
+# 3ª tratamento do input, caso a pessoa escolha cadastrar
+
     titulo = input('Digite o titulo do livro: ')
     genero = input('Digite o gênero do livro: ')
+# capturando o titulo, e genero
+
     while True:
       try:
         quantidade = int(input('Digite quantidade do livro: '))
@@ -39,6 +56,8 @@ while True :
       except ValueError:
         print('Insira apenas numeros.')
         continue
+# criei um laço de repetição para que o usuario seja obrigado a utilizar
+# numeros inteiros e tratei o erro ValueError caso digite alguma letra
 
     livro_adicionado = Livro(titulo , genero, quantidade)
     lista_livros.append(livro_adicionado)
@@ -47,23 +66,32 @@ while True :
     print(f'O gênero desse livro é : {livro_adicionado.genero}')
     print(f'A quantidade em estoque deste livro é: {livro_adicionado.quantidade}')
     divisor_linha()
+#aqui concluo o cadastro e mostro uma mensagem de confirmação
 
   elif escolha.lower() == 'sair' or escolha.lower() == 's' :
     print('Obrigado por contribuir com nosso sistema!')
     break
+# 4ª tratamento do input e o mais simples, 'fecho' o sistema
 
   elif escolha.lower() == 'buscar' or escolha.lower() == 'b' :
+# 5ª tratamento do input, a funcionalidade 'buscar'
     livro_encontrado = None
+# criei essa variável para armazenar o livro encontrado
+# e me ajudar com as condicionais
     while True :
       titulo_buscado = input('Qual titulo buscado: ')
       for livro_buscado in lista_livros :
         if livro_buscado.titulo.lower() == titulo_buscado.lower() :
           livro_encontrado = livro_buscado
           break
+#aqui eu quero o laço (for) quando achar um titulo igual ao buscado
+# e adiciono um valor a variavel livro_encontrado
 
       if livro_encontrado == None :
           print('Titulo não encontrado')
           continue
+#se o meu laço (for) nao encontrou um livro na lista, entao a variavel
+#livro_encontrado continua "None" ou seja o livro nao esta na lista
 
       if livro_encontrado :
           print('livro encontrado !')
@@ -72,8 +100,11 @@ while True :
           print(f'O estoque do livro é : {livro_encontrado.quantidade}')
           divisor_linha()
           break
+#se a variavel livro_encontrado for True, ou seja, tem um valor, e ja nao é mais 
+#Falsy e mostro a mensagem de livro encontrado
 
   elif escolha.lower() == 'listar' or escolha.lower() == 'l' :
+# 6ª tratamento do input, quando o usuario quer listar
     try:
       print('Aqui vai a lista dos livros nos sitema: ')
       divisor_linha()
@@ -83,6 +114,8 @@ while True :
         print(f'Gênero do livro : {livro_cadastrados.genero}')
         print(f'Quantidade em estoque : {livro_cadastrados.quantidade}')
         divisor_linha()
+#usei o for para mostrar livro por livro, e o Try para tratar um erro de ValueError,
+#para tratar quando o livro nao foi encontrado
 
       titulo_p_grf = []
       quantidade_p_grf = []
@@ -90,6 +123,7 @@ while True :
       for titulos_dos_livros in lista_livros :
         titulo_p_grf.append(titulos_dos_livros.titulo)
         quantidade_p_grf.append(titulos_dos_livros.quantidade)
+#coletando dados para o gráfico
 
       plt.bar(titulo_p_grf, quantidade_p_grf, color='skyblue')
       plt.title("Quantidade de Livros Cadastrados")
@@ -98,11 +132,13 @@ while True :
       plt.ylim(0, max(quantidade_p_grf) + 2)
       plt.show()
       continue
+#codigo para gerar o grafico
 
     except ValueError:
       print('Nenhum livro listado no momento.')
       continue
-
+# o except do try anterior, caso não tenha nenhum cadastro na lista
   else:
     print('Insira uma opção válida')
     continue
+# Ultimo tratamento do input, caso nao tenha algum opção que nao tratei
