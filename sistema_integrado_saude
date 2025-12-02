@@ -1,0 +1,152 @@
+
+from typing import List, Dict
+import sys
+
+# Estrutura de armazenamento: lista de dicionários
+pacientes: List[Dict[str, str]] = []
+
+def limpar_tela():
+    # Função simples para estética — não depende de bibliotecas externas
+    print("\n" * 2)
+
+def validar_inteiro(texto: str) -> int:
+    """Solicita entrada até que seja um inteiro válido."""
+    while True:
+        valor = input(texto).strip()
+        if valor == "":
+            print("Entrada vazia. Tente novamente.")
+            continue
+        try:
+            n = int(valor)
+            if n < 0:
+                print("Número negativo não é permitido. Tente novamente.")
+                continue
+            return n
+        except ValueError:
+            print("Por favor digite um número inteiro válido.")
+
+def formatar_telefone(telefone: str) -> str:
+    """Retorna telefone sem excesso de espaços; sem validação complexa."""
+    return " ".join(telefone.split())
+
+def cadastrar_paciente():
+    limpar_tela()
+    print("=== CADASTRAR PACIENTE ===")
+    nome = input("Nome do paciente: ").strip()
+    if not nome:
+        print("Nome inválido. Cadastro cancelado.")
+        return
+    idade = None
+    while idade is None:
+        try:
+            idade_raw = input("Idade: ").strip()
+            idade = int(idade_raw)
+            if idade < 0 or idade > 130:
+                print("Idade inválida. Informe um número entre 0 e 130.")
+                idade = None
+        except ValueError:
+            print("Idade deve ser um número inteiro. Tente novamente.")
+    telefone = input("Telefone: ").strip()
+    telefone = formatar_telefone(telefone)
+
+    paciente = {
+        "nome": nome,
+        "idade": idade,
+        "telefone": telefone
+    }
+    pacientes.append(paciente)
+    print(f"Paciente '{nome}' cadastrado com sucesso!")
+
+def estatisticas():
+    limpar_tela()
+    print("=== ESTATÍSTICAS ===")
+    total = len(pacientes)
+    if total == 0:
+        print("Nenhum paciente cadastrado ainda.")
+        return
+
+    # calcular idade média
+    soma_idades = sum(p["idade"] for p in pacientes)
+    idade_media = soma_idades / total
+
+    # encontrar mais novo e mais velho
+    mais_novo = min(pacientes, key=lambda p: p["idade"])
+    mais_velho = max(pacientes, key=lambda p: p["idade"])
+
+    print(f"Número total de pacientes cadastrados: {total}")
+    # formatando média para 2 casas decimais
+    print(f"Idade média dos pacientes: {idade_media:.2f} anos")
+    print(f"Paciente mais novo: {mais_novo['nome']} — {mais_novo['idade']} anos")
+    print(f"Paciente mais velho: {mais_velho['nome']} — {mais_velho['idade']} anos")
+
+def buscar_paciente():
+    limpar_tela()
+    print("=== BUSCAR PACIENTE ===")
+    termo = input("Digite o nome (ou parte do nome) para busca: ").strip().lower()
+    if termo == "":
+        print("Busca vazia. Operação cancelada.")
+        return
+    encontrados = [p for p in pacientes if termo in p["nome"].lower()]
+    if not encontrados:
+        print("Nenhum paciente encontrado com esse termo.")
+        return
+    print(f"Foram encontrados {len(encontrados)} paciente(s):")
+    for idx, p in enumerate(encontrados, start=1):
+        print(f"{idx}. {p['nome']} — {p['idade']} anos — {p['telefone']}")
+
+def listar_todos():
+    limpar_tela()
+    print("=== LISTAR TODOS OS PACIENTES ===")
+    if not pacientes:
+        print("Nenhum paciente cadastrado.")
+        return
+    # Ordenar por nome para exibição organizada
+    ordenados = sorted(pacientes, key=lambda p: p["nome"].lower())
+    largura_nome = max(len(p["nome"]) for p in ordenados) + 2
+    print(f"{'NOME'.ljust(largura_nome)} | IDADE | TELEFONE")
+    print("-" * (largura_nome + 3 + 6 + 3 + 12))
+    for p in ordenados:
+        print(f"{p['nome'].ljust(largura_nome)} | {str(p['idade']).center(5)} | {p['telefone']}")
+
+def menu_principal():
+    while True:
+        print()
+        print("=== SISTEMA CLÍNICA VIDA+ ===")
+        print("1. Cadastrar paciente")
+        print("2. Ver estatísticas")
+        print("3. Buscar paciente")
+        print("4. Listar todos os pacientes")
+        print("5. Sair")
+        escolha = input("Escolha uma opção: ").strip()
+
+        if escolha == "1":
+            cadastrar_paciente()
+        elif escolha == "2":
+            estatisticas()
+        elif escolha == "3":
+            buscar_paciente()
+        elif escolha == "4":
+            listar_todos()
+        elif escolha == "5":
+            print("Encerrando o sistema. Até mais!")
+            break
+        else:
+            print("Opção inválida. Escolha um número entre 1 e 5.")
+
+def inserir_dados_exemplo():
+    """Função opcional para preencher pacientes de exemplo — útil para demonstrar."""
+    exemplos = [
+        {"nome": "João Silva", "idade": 45, "telefone": "(11) 99999-9999"},
+        {"nome": "Maria Oliveira", "idade": 30, "telefone": "(21) 98888-7777"},
+        {"nome": "Pedro Santos", "idade": 17, "telefone": "(31) 97777-6666"},
+    ]
+    pacientes.extend(exemplos)
+
+if __name__ == "__main__":
+    # Inserir dados de exemplo? Descomente a linha abaixo se quiser demonstrar rapidamente
+    # inserir_dados_exemplo()
+    try:
+        menu_principal()
+    except KeyboardInterrupt:
+        print("\nPrograma interrompido pelo usuário. Encerrando...")
+        sys.exit(0)
